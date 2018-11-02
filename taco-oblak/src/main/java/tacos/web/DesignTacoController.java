@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
+import tacos.Taco;
 //import tacos.Taco;
 import tacos.Ingredient.Type;
-//import tacos.Taco;
+import tacos.Taco;
 
 @Slf4j
 @Controller
@@ -31,6 +32,7 @@ public class DesignTacoController {
 		List<Ingredient> ingredients = Arrays.asList(
 				  new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
 				  new Ingredient("COTO", "Corn Tortilla", Type.WRAP),
+				  new Ingredient("OATS", "Oats Tortilla", Type.WRAP),
 				  new Ingredient("GRBF", "Ground Beef", Type.PROTEIN),
 				  new Ingredient("CARN", "Carnitas", Type.PROTEIN),
 				  new Ingredient("TMTO", "Diced Tomatoes", Type.VEGGIES),
@@ -44,18 +46,23 @@ public class DesignTacoController {
 		Type[] types = Ingredient.Type.values();
 		for (Type type : types) {
 			model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
+			log.info(type.toString().toLowerCase() + ", " + filterByType(ingredients, type));
 		}
 		
 		
-		//model.addAllAttributes("design", new Taco());
+		model.addAttribute("design", new Taco());
 		
 		return "design";
 	}
 	
 	  @PostMapping
-	  public String processDesign( Model model) {
-	   
-	      return "home";
+	  public String processDesign(@Valid Taco design,  Errors errors, Model model) {
+		  // Save the Taco design (we'll do thar in ch 4)
+		  if (errors.hasErrors()) {
+		      return "redirect:/design";
+		    }
+		  log.info("Processing design:" + design);
+	      return "redirect:/orders/current";
 	    }
 	
 	
